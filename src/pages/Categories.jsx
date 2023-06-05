@@ -318,13 +318,6 @@ const videoList = [
     thumbnails: "https://i.ytimg.com/vi/MxV_GNbRLhs/hqdefault.jpg",
     url: "https://www.youtube.com/watch?v=MxV_GNbRLhs",
   },
-  {
-    id: 1002,
-    title: "TO DO X TXT - EP.108 Forest Fruits Festival Part 1",
-    genre_name: "음악",
-    thumbnails: "https://i.ytimg.com/vi/MxV_GNbRLhs/hqdefault.jpg",
-    url: "https://www.youtube.com/watch?v=MxV_GNbRLhs",
-  },
 ];
 
 export default function Categories() {
@@ -396,7 +389,6 @@ const SlideBox = styled.div`
   padding: 0px auto;
   margin-top: 50px;
   z-index: 98;
-
 `;
 const ContentsBox = styled.div`
   display: flex;
@@ -404,7 +396,7 @@ const ContentsBox = styled.div`
   margin: 0 auto;
   height: 220px;
   width: 280px;
-  overflow:hidden;
+  overflow: hidden;
   /* position:bottom; */
   @media screen and (max-width: 800px) {
     /* overflow:auto; */
@@ -456,7 +448,7 @@ const ContentsImg = styled.img`
 
 const PageContainer = styled.div`
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   width: 1000px;
   margin: 10px auto;
   /* margin-top: 20px;
@@ -473,7 +465,7 @@ const PageNum = styled.div`
 `;
 
 const NumButton = styled.div`
-  margin: 0 1rem; 
+  margin: 0 1rem;
   background: #676060;
   color: white;
   font-size: 1rem;
