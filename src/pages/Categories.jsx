@@ -1,112 +1,90 @@
 import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { FiRefreshCw } from "react-icons/fi";
 
-const rankList = {
-  Youtube: [
-    {
-      id: 1,
-      rank: 1,
-      image:
-        "https://file.miricanvas.com/template_thumb/2021/06/06/17/10/kasscx5ug4owoktr/thumb.jpg",
-    },
-    {
-      id: 2,
-      rank: 2,
-      image: "https://i.ytimg.com/vi/Uidupj_sAO8/maxresdefault.jpg",
-    },
-    {
-      id: 3,
-      rank: 3,
-      image: "https://i.ytimg.com/vi/0f4G4yAWOv0/maxresdefault.jpg",
-    },
-    {
-      id: 4,
-      rank: 4,
-      image: "https://i.ytimg.com/vi/zNB6gpcQXng/maxresdefault.jpg",
-    },
-    {
-      id: 5,
-      rank: 5,
-      image: "https://i.ytimg.com/vi/MRIvSNGO4vY/maxresdefault.jpg",
-    },
-    {
-      id: 6,
-      rank: 6,
-      image:
-        "https://www.naeponews.co.kr/news/photo/202109/11481_13991_3815.jpg",
-    },
-    {
-      id: 7,
-      rank: 7,
-      image: "https://i.ytimg.com/vi/eHXCjEdohWc/maxresdefault.jpg",
-    },
-    {
-      id: 8,
-      rank: 8,
-      image:
-        "https://i.ytimg.com/vi/rk-yNZj3qv0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDBqWqEHtO7hvuMdE_pZ3IY3D3H2A",
-    },
-    {
-      id: 9,
-      rank: 9,
-      image:
-        "https://openads-real.s3.amazonaws.com/openadsAdmin/images/contsThumb/contsThumb_0905122747417_%E1%84%8A%E1%85%A5%E1%86%B7%E1%84%82%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%AF.jpg",
-    },
-    {
-      id: 10,
-      rank: 10,
-      image: "https://i.ytimg.com/vi/w9TON4IwR2w/maxresdefault.jpg",
-    },
-  ],
-};
 export default function Categories() {
+  const [page, setPage] = useState(1);
+  const MaxPage = Math.ceil(videoList.length / 16); // MaxPage값을 받아오는 함수
+
+  const truncate = (title, n) => {
+    return title?.length > n ? title.substr(0, n) + ".." : title;
+  };
+  console.log(page);
   return (
     <div>
-      <SlideBox>
-        {rankList.Youtube.slice(0, 4).map((props) => {
-          return (
-            <div key={props.id}>
-              <ContentsBox>
-                <BannerImg src={props.image} alt="rank" />
-              </ContentsBox>
-            </div>
-          );
-        })}
-
-        <RefreshButton>
-          <RefreshDiv>
-            <FiRefreshCw />
-          </RefreshDiv>
-        </RefreshButton>
-      </SlideBox>
+      <TotalWrap>
+        <AppBar />
+        <WrapBox>
+          <div>
+            <SlideBox>
+              {videoList
+                .slice(16 * (page - 1), 16 * (page - 1) + 16)
+                .map((data) => {
+                  return (
+                    <div key={data.id}>
+                      <ContentsBox>
+                        <ImgBox>
+                          <ContentsImg
+                            onClick={() => {
+                              window.open(`${data.url}`);
+                            }}
+                            src={data.thumbnails}
+                            alt="rank"
+                          />
+                        </ImgBox>
+                      </ContentsBox>
+                      <ContentsTitleDiv>{data?.title} </ContentsTitleDiv>
+                      {/* {truncate(data?.title, 20)} */}
+                    </div>
+                  );
+                })}
+            </SlideBox>
+            <PageContainer>
+              <PageNum>
+                {Array.from({ length: MaxPage }, (value, i) => (
+                  <NumButton
+                    onClick={() => {
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </NumButton>
+                ))}
+              </PageNum>
+            </PageContainer>
+          </div>
+        </WrapBox>
+      </TotalWrap>
     </div>
   );
 }
 
 const SlideBox = styled.div`
-  display: flex;
-  width: 1200px;
-  height: 200px;
+  display: Grid;
+  grid-template-columns: repeat(4, minmax(300px, auto));
+  row-gap: 100px;
+  /* width: 1200px; */
+  justify-content: center;
+  max-width: 100%;
+  height: 200vh;
   margin: 0px auto;
-  overflow: hidden;
-  /* background:white; */
-  /* overflow:auto;
-    white-space: nowrap; */
-  /* overflow-x: scroll;
-    scroll-snap-type: x mandatory; */
+  padding: 0px auto;
+  margin-top: 50px;
+  z-index: 98;
+
 `;
 const ContentsBox = styled.div`
   display: flex;
+  /* align-items: center; */
   margin: 0 auto;
-  height: 170px;
+  height: 220px;
   width: 280px;
-  /* overflow:hidden; */
+  overflow:hidden;
   /* position:bottom; */
   @media screen and (max-width: 800px) {
     /* overflow:auto; */
     /* white-space: nowrap; */
-    /* width: 100px; */
+    width: 100px;
     overflow-x: visible;
     /* scroll-snap-type: x mandatory; */
   }
@@ -118,24 +96,27 @@ const ContentsBox = styled.div`
     scroll-snap-type: x mandatory;
   }
 `;
-const RankImg = styled.div`
-  /* background-color: #e0dede; */
-
-  position: absolute;
-  bottom: 0;
-
-  height: 120px;
-  color: #1e1e1e;
-  -webkit-text-stroke: 2px #acacac;
-  font-size: 120px;
-  font-weight: 700;
-  text-shadow: 3px 4px 5px black;
-  z-index: 1;
+const ImgBox = styled.div`
+  transition: all 0.3s ease;
 `;
-const BannerImg = styled.img`
+const ContentsTitleDiv = styled.div`
+  display: flex;
+  margin: 0 auto;
+  font-weight: 600;
+  position: bottom;
+  color: #bababa;
+  overflow: hidden;
+  width: 240px;
+  height: 60px;
+  @media (max-width: 800px) {
+    overflow: hidden;
+  }
+`;
+
+const ContentsImg = styled.img`
   position: absolute;
   right: -1;
-  height: 160px;
+  height: 200px;
   width: 256px;
   border-radius: 20px;
   padding: 10px;
@@ -148,20 +129,45 @@ const BannerImg = styled.img`
   }
 `;
 
-const RefreshDiv = styled.span`
-  font-size: 23px;
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center; 
+  width: 1000px;
+  margin: 10px auto;
+  /* margin-top: 20px;
+  margin-bottom: 20px; */
+  /* color: white;
+  font-size: 20px; */
+`;
+
+const PageNum = styled.div`
+  /* position: relative; */
+  display: flex;
+  /* width: 20px;
+  height: 40px; */
+`;
+
+const NumButton = styled.div`
+  margin: 0 1rem; 
+  background: #676060;
   color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #207520;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
-const RefreshButton = styled.button`
-  margin: 0px auto;
-  background-color: transparent;
-  color: white;
-  width: 40px;
-  height: 40px;
-  align-self: center;
-  /* border: none; */
-  font-size: 20px;
-  border-radius: 10px;
-  opacity: 0.5;
-`;
+
+const CategorieContainer = styled.div``;
