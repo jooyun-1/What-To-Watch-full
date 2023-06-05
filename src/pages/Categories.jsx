@@ -318,6 +318,13 @@ const videoList = [
     thumbnails: "https://i.ytimg.com/vi/MxV_GNbRLhs/hqdefault.jpg",
     url: "https://www.youtube.com/watch?v=MxV_GNbRLhs",
   },
+  {
+    id: 1002,
+    title: "TO DO X TXT - EP.108 Forest Fruits Festival Part 1",
+    genre_name: "음악",
+    thumbnails: "https://i.ytimg.com/vi/MxV_GNbRLhs/hqdefault.jpg",
+    url: "https://www.youtube.com/watch?v=MxV_GNbRLhs",
+  },
 ];
 
 export default function Categories() {
