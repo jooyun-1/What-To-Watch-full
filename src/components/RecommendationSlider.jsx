@@ -54,15 +54,38 @@ const rankList = {
 
 export default function RecommendationSlider() {
   const [movieList, setMovieList] = useState([]);
+  const [tvList, setTVList] = useState([]);
+
+  let sessionStorage = window.sessionStorage;
 
   const getMovieList = async () => {
-    const response = await axios.get("http://localhost:3100/recommend-movies");
+    const genres = sessionStorage.getItem("genres");
+    const params = { genres: genres };
+    console.log(params);
+    const response = await axios.get("http://localhost:3100/recommend-movies", {
+      params,
+    });
     console.log(response.data);
     setMovieList(response.data.movieList);
   };
 
+  const getTVList = async () => {
+    const genres = sessionStorage.getItem("genres");
+    const params = { genres: genres };
+    console.log(params);
+    const response = await axios.get(
+      "http://localhost:3100/recommend-tvshows",
+      {
+        params,
+      }
+    );
+    console.log(response.data);
+    setTVList(response.data.tvList);
+  };
+
   useEffect(() => {
     getMovieList();
+    getTVList();
   }, []);
 
   return (
@@ -72,7 +95,24 @@ export default function RecommendationSlider() {
           return (
             <div key={props.id}>
               <ContentsBox>
-                <RankImg>{rank + 1}</RankImg>
+                {/* <RankImg>{rank + 1}</RankImg> */}
+                <BannerImg src={props.poster_img} alt="rank" />
+              </ContentsBox>
+            </div>
+          );
+        })}
+        <RefreshButton>
+          <RefreshDiv>
+            <FiRefreshCw />
+          </RefreshDiv>
+        </RefreshButton>
+      </SlideBox>
+      <SlideBox>
+        {tvList.map((props, rank) => {
+          return (
+            <div key={props.id}>
+              <ContentsBox>
+                {/* <RankImg>{rank + 1}</RankImg> */}
                 <BannerImg src={props.poster_img} alt="rank" />
               </ContentsBox>
             </div>

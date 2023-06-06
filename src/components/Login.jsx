@@ -35,10 +35,12 @@ const Login = () => {
       if (response.data.success === true && sessionStorage.length === 0) {
         sessionStorage.setItem("loginId", email);
         sessionStorage.setItem("loginPassword", password);
+        sessionStorage.setItem("genres", response.data.user.genres);
+
         console.log("로그인 성공!");
         setIsLogin(true);
         // 로그인 성공 후 처리할 로직 작성
-        navigate("/mypage"); // 내 정보 페이지로 이동
+        navigate("/"); // 내 정보 페이지로 이동
       } else {
         setErrorMessage(response.data.message);
         alert("로그인 실패");

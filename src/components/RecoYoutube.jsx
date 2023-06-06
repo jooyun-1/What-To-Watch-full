@@ -1,77 +1,91 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Netflix1 from "../images/Netflix1.png";
 import Netflix2 from "../images/Netflix2.png";
 import { FiRefreshCw } from "react-icons/fi";
+import axios from "axios";
 
 const rankList = {
-    Youtube: [
-      {
-        id: 1,
-        rank: 1,
-        image:
-          "https://file.miricanvas.com/template_thumb/2021/06/06/17/10/kasscx5ug4owoktr/thumb.jpg",
-      },
-      {
-        id: 2,
-        rank: 2,
-        image: "https://i.ytimg.com/vi/Uidupj_sAO8/maxresdefault.jpg"
-          ,
-      },
-      {
-        id: 3,
-        rank: 3,
-        image:
-          "https://i.ytimg.com/vi/0f4G4yAWOv0/maxresdefault.jpg",
-      },
-      {
-        id: 4,
-        rank: 4,
-        image:
-          "https://i.ytimg.com/vi/zNB6gpcQXng/maxresdefault.jpg",
-      },
-      {
-        id: 5,
-        rank: 5,
-        image:
-          "https://i.ytimg.com/vi/MRIvSNGO4vY/maxresdefault.jpg",
-      },
-      {
-        id: 6,
-        rank: 6,
-        image: 
+  Youtube: [
+    {
+      id: 1,
+      rank: 1,
+      image:
+        "https://file.miricanvas.com/template_thumb/2021/06/06/17/10/kasscx5ug4owoktr/thumb.jpg",
+    },
+    {
+      id: 2,
+      rank: 2,
+      image: "https://i.ytimg.com/vi/Uidupj_sAO8/maxresdefault.jpg",
+    },
+    {
+      id: 3,
+      rank: 3,
+      image: "https://i.ytimg.com/vi/0f4G4yAWOv0/maxresdefault.jpg",
+    },
+    {
+      id: 4,
+      rank: 4,
+      image: "https://i.ytimg.com/vi/zNB6gpcQXng/maxresdefault.jpg",
+    },
+    {
+      id: 5,
+      rank: 5,
+      image: "https://i.ytimg.com/vi/MRIvSNGO4vY/maxresdefault.jpg",
+    },
+    {
+      id: 6,
+      rank: 6,
+      image:
         "https://www.naeponews.co.kr/news/photo/202109/11481_13991_3815.jpg",
-      },
-      {
-        id: 7,
-        rank: 7,
-        image: "https://i.ytimg.com/vi/eHXCjEdohWc/maxresdefault.jpg",
-      },
-      {
-        id: 8,
-        rank: 8,
-        image:
-          "https://i.ytimg.com/vi/rk-yNZj3qv0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDBqWqEHtO7hvuMdE_pZ3IY3D3H2A",
-      },
-      {
-        id: 9,
-        rank: 9,
-        image: "https://openads-real.s3.amazonaws.com/openadsAdmin/images/contsThumb/contsThumb_0905122747417_%E1%84%8A%E1%85%A5%E1%86%B7%E1%84%82%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%AF.jpg",
-      },
-      {
-        id: 10,
-        rank: 10,
-        image: "https://i.ytimg.com/vi/w9TON4IwR2w/maxresdefault.jpg",
-      },
-    ],
-  };
+    },
+    {
+      id: 7,
+      rank: 7,
+      image: "https://i.ytimg.com/vi/eHXCjEdohWc/maxresdefault.jpg",
+    },
+    {
+      id: 8,
+      rank: 8,
+      image:
+        "https://i.ytimg.com/vi/rk-yNZj3qv0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDBqWqEHtO7hvuMdE_pZ3IY3D3H2A",
+    },
+    {
+      id: 9,
+      rank: 9,
+      image:
+        "https://openads-real.s3.amazonaws.com/openadsAdmin/images/contsThumb/contsThumb_0905122747417_%E1%84%8A%E1%85%A5%E1%86%B7%E1%84%82%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%AF.jpg",
+    },
+    {
+      id: 10,
+      rank: 10,
+      image: "https://i.ytimg.com/vi/w9TON4IwR2w/maxresdefault.jpg",
+    },
+  ],
+};
 
 export default function RecoYoutube() {
+  const [videoList, setVideoList] = useState([]);
+
+  const getVideoList = async () => {
+    const genres = sessionStorage.getItem("genres");
+    const params = { genres: genres };
+    console.log(params);
+    const response = await axios.get("http://localhost:3100/recommend-videos", {
+      params,
+    });
+    console.log(response.data);
+    setVideoList(response.data.videoList);
+  };
+
+  useEffect(() => {
+    getVideoList();
+  }, []);
   return (
     <div>
       <SlideBox>
-        {rankList.Youtube.slice(0,4).map((props) => {
+        {/* {rankList.Youtube.slice(0,4).map((props) => {
           return (
             <div key={props.id}>
               <ContentsBox>                
@@ -79,8 +93,17 @@ export default function RecoYoutube() {
               </ContentsBox>
             </div>
           );
+        })} */}
+        {videoList.map((props, rank) => {
+          return (
+            <div key={props.id}>
+              <ContentsBox>
+                {/* <RankImg>{rank + 1}</RankImg> */}
+                <BannerImg src={props.thumbnails} alt="rank" />
+              </ContentsBox>
+            </div>
+          );
         })}
-
 
         <RefreshButton>
           <RefreshDiv>
@@ -97,7 +120,7 @@ const SlideBox = styled.div`
   width: 1200px;
   height: 200px;
   margin: 0px auto;
-  overflow:hidden;
+  overflow: hidden;
   /* background:white; */
   /* overflow:auto;
     white-space: nowrap; */
@@ -112,25 +135,25 @@ const ContentsBox = styled.div`
   /* overflow:hidden; */
   /* position:bottom; */
   @media screen and (max-width: 800px) {
-   /* overflow:auto; */
+    /* overflow:auto; */
     /* white-space: nowrap; */
     /* width: 100px; */
-     overflow-x: visible;
+    overflow-x: visible;
     /* scroll-snap-type: x mandatory; */
   }
   @media screen and (max-width: 480px) {
-   /* overflow:auto; */
+    /* overflow:auto; */
     /* white-space: nowrap; */
     width: 100px;
-     overflow-x: scroll;
+    overflow-x: scroll;
     scroll-snap-type: x mandatory;
   }
 `;
 const BannerImg = styled.img`
   position: absolute;
-  right:-1;
-  height: 160px; 
-  width: 256px; 
+  right: -1;
+  height: 160px;
+  width: 256px;
   border-radius: 20px;
   padding: 10px;
   cursor: pointer;
@@ -138,8 +161,8 @@ const BannerImg = styled.img`
   z-index: 98;
   &:hover {
     transform: scale(1.1);
-    margin-right:20px;
-  } 
+    margin-right: 20px;
+  }
 `;
 
 const RefreshDiv = styled.span`
@@ -148,7 +171,7 @@ const RefreshDiv = styled.span`
   cursor: pointer;
 `;
 const RefreshButton = styled.button`
-  margin: 0px auto; 
+  margin: 0px auto;
   background-color: transparent;
   color: white;
   width: 40px;
