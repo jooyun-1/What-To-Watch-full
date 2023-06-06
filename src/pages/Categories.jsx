@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 
 import AppBar from "../components/AppBar";
 import TotalWrap from "../styled-components/TotalWrap";
 import WrapBox from "../styled-components/WrapBox";
+import { useLocation } from "react-router";
+import axios from "axios";
 
 const videoList = [
   {
@@ -322,7 +324,25 @@ const videoList = [
 
 export default function Categories() {
   const [page, setPage] = useState(1);
-  const MaxPage = Math.ceil(videoList.length / 16); // MaxPage값을 받아오는 함수
+  const [list, setList] = useState([]);
+  const MaxPage = Math.ceil(list.length / 16); // MaxPage값을 받아오는 함수
+  const location = useLocation();
+  const genre = location.state.genre;
+  const type = location.state.type;
+
+  const getList = async () => {
+    const params = { genre: genre };
+    console.log(params);
+    const response = await axios.get(`http://localhost:3100/${type}`, {
+      params,
+    });
+    console.log(response.data);
+    setList(response.data.list);
+  };
+
+  useEffect(() => {
+    getList();
+  }, [genre, type]);
 
   const truncate = (title, n) => {
     return title?.length > n ? title.substr(0, n) + ".." : title;
@@ -335,27 +355,29 @@ export default function Categories() {
         <WrapBox>
           <div>
             <SlideBox>
-              {videoList
-                .slice(16 * (page - 1), 16 * (page - 1) + 16)
-                .map((data) => {
-                  return (
-                    <div key={data.id}>
-                      <ContentsBox>
-                        <ImgBox>
-                          <ContentsImg
-                            onClick={() => {
-                              window.open(`${data.url}`);
-                            }}
-                            src={data.thumbnails}
-                            alt="rank"
-                          />
-                        </ImgBox>
-                      </ContentsBox>
-                      <ContentsTitleDiv>{data?.title} </ContentsTitleDiv>
-                      {/* {truncate(data?.title, 20)} */}
-                    </div>
-                  );
-                })}
+              {list.slice(16 * (page - 1), 16 * (page - 1) + 16).map((data) => {
+                return (
+                  <div key={data.id}>
+                    <ContentsBox>
+                      <ImgBox>
+                        <ContentsImg
+                          onClick={() => {
+                            window.open(`${data.url}`);
+                          }}
+                          src={
+                            type !== "videos"
+                              ? data.poster_img
+                              : data?.thumbnails
+                          }
+                          alt="rank"
+                        />
+                      </ImgBox>
+                    </ContentsBox>
+                    <ContentsTitleDiv>{data?.title} </ContentsTitleDiv>
+                    {/* {truncate(data?.title, 20)} */}
+                  </div>
+                );
+              })}
             </SlideBox>
             <PageContainer>
               <PageNum>

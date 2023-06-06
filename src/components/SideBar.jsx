@@ -7,6 +7,7 @@ import { Navigation } from "react-minimal-side-navigation";
 import { Icon } from "semantic-ui-react";
 import styled from "styled-components";
 import axios from "axios";
+import { Navigate, useNavigate } from "react-router";
 const youtubeSubMenu = [
   {
     id: 1,
@@ -113,12 +114,16 @@ const youtubeSubMenu = [
     genre_name: "드라마",
   },
 ];
+const MoveToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}; // 상단으로 이동 (beahvior : auto, smooth)
+
 export default function SideBar({ isOpen }) {
   // const [isOpen, setIsOpen] = useState(false); //menu 초기값을 false로 설정
   // const handleMenu = () => {
   //   setIsOpen (isOpen => !isOpen); // on off 개념
   // }
-
+  const navigate = useNavigate();
   const [isMovieSubOpen, setIsMovieSubOpen] = useState(false);
   const [isDramaSubOpen, setIsDramaSubOpen] = useState(false);
   const [isVideoSubOpen, setIsVideoSubOpen] = useState(false);
@@ -129,7 +134,6 @@ export default function SideBar({ isOpen }) {
   const getMovieGenre = async () => {
     const MovieGenreUrl = "http://localhost:3100/genres";
     await axios.get(MovieGenreUrl).then((response) => {
-      console.log(response.data);
       setMovieGenere(response.data.genresList);
     });
   };
@@ -161,6 +165,15 @@ export default function SideBar({ isOpen }) {
   // const closeSideBar = () => {
 
   // };
+  const gotoCategories = (genre_name, type) => {
+    console.log(genre_name, type);
+    navigate("/Categories", {
+      state: {
+        genre: genre_name,
+        type: type,
+      },
+    });
+  };
   return (
     <>
       {isOpen && (
@@ -186,7 +199,16 @@ export default function SideBar({ isOpen }) {
                 return (
                   <div key={props.id}>
                     <SubMeunBox>
-                      <SubMenu>{props.genre_name}</SubMenu>
+                      <SubMenu
+                        onClick={() => {
+                          gotoCategories(props.genre_name, "movies");
+                          MoveToTop();
+                          // movetoTop
+                        }}
+                        // genre_name={props.genre_name}
+                      >
+                        {props.genre_name}
+                      </SubMenu>
                     </SubMeunBox>
                   </div>
                 );
@@ -213,7 +235,15 @@ export default function SideBar({ isOpen }) {
                 return (
                   <div key={props.id}>
                     <SubMeunBox>
-                      <SubMenu>{props.genre_name}</SubMenu>
+                      <SubMenu
+                        onClick={() => {
+                          gotoCategories(props.genre_name, "tvshows");
+                          MoveToTop();
+                        }}
+                        // genre_name={props.genre_name}
+                      >
+                        {props.genre_name}
+                      </SubMenu>
                     </SubMeunBox>
                   </div>
                 );
@@ -240,7 +270,15 @@ export default function SideBar({ isOpen }) {
                 return (
                   <div key={props.id}>
                     <SubMeunBox>
-                      <SubMenu>{props.genre_name}</SubMenu>
+                      <SubMenu
+                        onClick={() => {
+                          gotoCategories(props.genre_name, "videos");
+                          MoveToTop();
+                        }}
+                        // genre_name={props.genre_name}
+                      >
+                        {props.genre_name}
+                      </SubMenu>
                     </SubMeunBox>
                   </div>
                 );
