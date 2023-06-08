@@ -327,22 +327,37 @@ export default function Categories() {
   const [list, setList] = useState([]);
   const MaxPage = Math.ceil(list.length / 16); // MaxPage값을 받아오는 함수
   const location = useLocation();
-  const genre = location.state.genre;
-  const type = location.state.type;
+
+  let genre = location.state.genre;
+  let type = location.state.type;
+  let searchList = location.state.searchList;
 
   const getList = async () => {
-    const params = { genre: genre };
-    console.log(params);
-    const response = await axios.get(`http://localhost:3100/${type}`, {
-      params,
-    });
-    console.log(response.data);
-    setList(response.data.list);
+    let tempList = [];
+    if (searchList) {
+      for (let i = 0; i < searchList.length; i++) {
+        if (i === 2) {
+          type = "videos";
+        }
+        for (let j = 0; j < searchList[i].length; j++) {
+          tempList.push(searchList[i][j]);
+        }
+      }
+      setList(tempList);
+    } else {
+      const params = { genre: genre };
+      console.log(params);
+      const response = await axios.get(`http://localhost:3100/${type}`, {
+        params,
+      });
+      console.log(response.data);
+      setList(response.data.list);
+    }
   };
 
   useEffect(() => {
     getList();
-  }, [genre, type]);
+  }, [genre, type, searchList]);
 
   const truncate = (title, n) => {
     return title?.length > n ? title.substr(0, n) + ".." : title;
@@ -362,12 +377,13 @@ export default function Categories() {
                       <ImgBox>
                         <ContentsImg
                           onClick={() => {
-                            window.open(`${data.url}`);
+                            window.open(data.url);
                           }}
                           src={
-                            type !== "videos"
-                              ? data.poster_img
-                              : data?.thumbnails
+                            // type !== "videos"
+                            //   ? data.poster_img
+                            //   : data?.thumbnails
+                            data.poster_img ? data.poster_img : data?.thumbnails
                           }
                           alt="rank"
                         />

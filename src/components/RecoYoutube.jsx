@@ -96,7 +96,11 @@ export default function RecoYoutube() {
             <div key={props.id}>
               <ContentsBox>
                 {/* <RankImg>{rank + 1}</RankImg> */}
-                <BannerImg src={props.thumbnails} alt="rank" />
+                <BannerImg
+                  src={props.thumbnails}
+                  alt="rank"
+                  onClick={() => window.open(props.url)}
+                />
               </ContentsBox>
             </div>
           );

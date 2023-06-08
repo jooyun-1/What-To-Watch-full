@@ -35,6 +35,19 @@ export default function AppBar() {
     window.sessionStorage.clear();
     // }
   };
+
+  const getSearchList = async () => {
+    const params = { keyword: text };
+    const response = await axios.get("http://localhost:3100/search", {
+      params,
+    });
+    console.log(response.data);
+    navigate("/Categories", {
+      state: {
+        searchList: response.data.searchList,
+      },
+    });
+  };
   return (
     <div>
       <AppBarBox>
@@ -78,6 +91,33 @@ export default function AppBar() {
               오늘 뭐 볼까 ?
             </LogoName>
           </LogoBox>
+
+          <SearchBoxDiv>
+            <SearchDiv>
+              {" "}
+              {/* input tag */}
+              <Searchinput
+                type="text"
+                placeholder="무엇을 찾고 계십니까?"
+                value={text}
+                onChange={(e) => {
+                  setText(e.target.value);
+                }}
+                onKeyUp={() => {
+                  if (window.event.keyCode === 13) {
+                    getSearchList();
+                  }
+                }}
+              />
+              {/* value={search} onChange={onChange} */}
+            </SearchDiv>
+            <SearchButton onClick={() => getSearchList()}>
+              <Search>
+                <BsSearch />
+              </Search>
+            </SearchButton>
+          </SearchBoxDiv>
+
           {windowWidth > 768 && (
             <SearchBoxDiv>
               <SearchDiv>
@@ -100,6 +140,7 @@ export default function AppBar() {
               </SearchButton>
             </SearchBoxDiv>
           )}
+
           <MenuBoxDiv>
             <MenuDiv
               onClick={() => {
