@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-
-import Netflix1 from "../images/Netflix1.png";
-import Netflix2 from "../images/Netflix2.png";
 import { FiRefreshCw } from "react-icons/fi";
 import axios from "axios";
 
