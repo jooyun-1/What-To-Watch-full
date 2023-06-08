@@ -27,6 +27,19 @@ export default function AppBar() {
     window.sessionStorage.clear();
     // }
   };
+
+  const getSearchList = async () => {
+    const params = { keyword: text };
+    const response = await axios.get("http://localhost:3100/search", {
+      params,
+    });
+    console.log(response.data);
+    navigate("/Categories", {
+      state: {
+        searchList: response.data.searchList,
+      },
+    });
+  };
   return (
     <div>
       <AppBarBox>
@@ -82,10 +95,15 @@ export default function AppBar() {
                 onChange={(e) => {
                   setText(e.target.value);
                 }}
+                onKeyUp={() => {
+                  if (window.event.keyCode === 13) {
+                    getSearchList();
+                  }
+                }}
               />
               {/* value={search} onChange={onChange} */}
             </SearchDiv>
-            <SearchButton>
+            <SearchButton onClick={() => getSearchList()}>
               <Search>
                 <BsSearch />
               </Search>
