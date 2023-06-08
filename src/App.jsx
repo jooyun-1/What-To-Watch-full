@@ -7,6 +7,10 @@ import Top20 from "./pages/Top20";
 import Notice from "./pages/Notice";
 import MyPage from "./pages/MyPage";
 import Categories from "./pages/Categories";
+import PasswordChangePage from "./pages/PasswordChangePage";
+import EditProfile from "./pages/EditProfile";
+import Withdrawal from "./pages/Withdrawal";
+
 
 export default function App() {
   return (
@@ -20,6 +24,10 @@ export default function App() {
           <Route path="/Notice" element={<Notice />} />
           <Route path="/Notice" element={<Notice />} />
           <Route path="/Categories" element={<Categories />} />
+          <Route path="/password-change" element={<PasswordChangePage />} />
+          <Route path="/profileEdit" element={<EditProfile />} />
+          <Route path="/membership-withdrawal" element={<Withdrawal />} />
+
         </Routes>
       </Router>
     </div>

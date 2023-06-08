@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-
-
-// const EditProfile = ({ userData }) => {
-//   const [nickname, setNickname] = useState(userData.nickname);
-//   const [birthYear, setBirthYear] = useState(userData.birthYear);
-//   const [birthMonth, setBirthMonth] = useState(userData.birthMonth);
-//   const [birthDay, setBirthDay] = useState(userData.birthDay);
-
+import Sidebar from '../components/ProfileSideBar';
 
 const EditProfile = () => {
   const [nickname, setNickname] = useState('');
@@ -35,8 +28,12 @@ const EditProfile = () => {
       });
   };
 
+  const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+
   return (
     <Container>
+      <Sidebar />
       <Title>내 정보 수정</Title>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
@@ -58,21 +55,33 @@ const EditProfile = () => {
         <FormGroup>
           <Label>생년월일</Label>
           <BirthInputGroup>
-            <BirthInput
-              type="number"
+            <BirthSelect
               value={birthYear}
               onChange={(e) => setBirthYear(e.target.value)}
-            />
-            <BirthInput
-              type="number"
+            >
+              {Array.from({ length: new Date().getFullYear() - 1899 }, (_, i) => (1900 + i).toString()).map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </BirthSelect>
+            <Separator>년</Separator>
+            <BirthSelect
               value={birthMonth}
               onChange={(e) => setBirthMonth(e.target.value)}
-            />
-            <BirthInput
-              type="number"
+            >
+              {months.map(month => (
+                <option key={month} value={month}>{month}</option>
+              ))}
+            </BirthSelect>
+            <Separator>월</Separator>
+            <BirthSelect
               value={birthDay}
               onChange={(e) => setBirthDay(e.target.value)}
-            />
+            >
+              {days.map(day => (
+                <option key={day} value={day}>{day}</option>
+              ))}
+            </BirthSelect>
+            <Separator>일</Separator>
           </BirthInputGroup>
         </FormGroup>
         <Button type="submit">수정</Button>
@@ -85,6 +94,7 @@ const EditProfile = () => {
 const InfoText = styled.span`
   font-weight: bold;
   margin-left: 10px;
+  color: #ffffff; /* 다크 모드 글자 색상 */
 `;
 
 const Container = styled.div`
@@ -92,16 +102,18 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background-color: #232323; /* 다크 모드 배경색 */
 `;
 
 const Title = styled.h2`
   margin-bottom: 20px;
+  color: #ffffff; /* 다크 모드 글자 색상 */
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 500px;
 `;
 
 const FormGroup = styled.div`
@@ -113,6 +125,7 @@ const FormGroup = styled.div`
 const Label = styled.label`
   width: 100px;
   font-weight: bold;
+  color: #ffffff; /* 다크 모드 글자 색상 */
 `;
 
 const Input = styled.input`
@@ -120,28 +133,26 @@ const Input = styled.input`
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
-`;
-
-const GenderSelect = styled.select`
-  flex: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  background-color: #1f1f1f; /* 다크 모드 입력 필드 배경색 */
+  color: #ffffff; /* 다크 모드 입력 필드 글자 색상 */
 `;
 
 const BirthInputGroup = styled.div`
   display: flex;
+  align-items: center;
 `;
 
-const BirthInput = styled(Input)`
-  width: 60px;
+const BirthSelect = styled.select`
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
   margin-right: 5px;
+  background-color: #1f1f1f; /* 다크 모드 선택 필드 배경색 */
+  color: #ffffff; /* 다크 모드 선택 필드 글자 색상 */
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+const Separator = styled.span`
+  margin-right: 5px;
 `;
 
 const Button = styled.button`
@@ -151,11 +162,12 @@ const Button = styled.button`
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  margin-right: 10px;
+  margin-top: 20px;
 `;
 
 const CancelButton = styled(Button)`
   background-color: #bdbdbd;
+  margin-right: 10px;
 `;
 
 export default EditProfile;

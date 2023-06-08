@@ -49,6 +49,10 @@ const Login = () => {
       console.error("로그인 요청 실패:", error);
     }
   };
+    if (isLogin) {
+      return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 사라지게 함
+    }
+
 
   return (
     <LoginContainer>
