@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { redirect, useNavigate } from "react-router-dom";
 import { BsPerson, BsSearch, BsMoon } from "react-icons/bs";
@@ -13,13 +13,21 @@ export default function AppBar() {
   const navigate = useNavigate();
   const [text, setText] = useState("");
   const [isOpen, setIsOpen] = useState(false); //menu 초기값을 false로 설정
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const handleMenu = () => {
     setIsOpen((isOpen) => !isOpen); // on off 개념
   };
   const closeSideBar = () => {
     setIsOpen(true);
   };
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const logout = async () => {
     const response = await axios.get("http://localhost:3100/users/logout");
     console.log(response.data);
@@ -52,7 +60,6 @@ export default function AppBar() {
                 <Overlay
                   onClick={() => {
                     closeSideBar();
-                    console.log("이거");
                   }}
                 />
               )}
@@ -71,26 +78,28 @@ export default function AppBar() {
               오늘 뭐 볼까 ?
             </LogoName>
           </LogoBox>
-          <SearchBoxDiv>
-            <SearchDiv>
-              {" "}
-              {/* input tag */}
-              <Searchinput
-                type="text"
-                placeholder="무엇을 찾고 계십니까?"
-                value={text}
-                onChange={(e) => {
-                  setText(e.target.value);
-                }}
-              />
-              {/* value={search} onChange={onChange} */}
-            </SearchDiv>
-            <SearchButton>
-              <Search>
-                <BsSearch />
-              </Search>
-            </SearchButton>
-          </SearchBoxDiv>
+          {windowWidth > 768 && (
+            <SearchBoxDiv>
+              <SearchDiv>
+                {" "}
+                {/* input tag */}
+                <Searchinput
+                  type="text"
+                  placeholder="무엇을 찾고 계십니까?"
+                  value={text}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                  }}
+                />
+                {/* value={search} onChange={onChange} */}
+              </SearchDiv>
+              <SearchButton>
+                <Search>
+                  <BsSearch />
+                </Search>
+              </SearchButton>
+            </SearchBoxDiv>
+          )}
           <MenuBoxDiv>
             <MenuDiv
               onClick={() => {
@@ -125,9 +134,9 @@ export default function AppBar() {
               게시판{" "}
             </MenuDiv>
           </MenuBoxDiv>
-          <Mode>
+          {/* <Mode>
             <BsMoon />
-          </Mode>
+          </Mode> */}
         </AppBarBottom>
       </AppBarBox>
     </div>
@@ -150,6 +159,9 @@ const AppBarTop = styled.div`
   justify-content: flex-end;
   padding: 0px 40px 0px 10px;
   color: white;
+  @media screen and (max-width: 480px) {
+    padding: 0px;
+  }
 `;
 const Login = styled.div`
   font-size: 14px;
@@ -180,6 +192,9 @@ const LogoBox = styled.div`
   display: flex;
   width: 13rem;
   padding: 20px;
+  @media screen and (max-width: 480px) {
+    padding: 0px;
+  }
 `;
 const CategoriesBox = styled.button`
   border: 10px;
@@ -194,13 +209,13 @@ const CategoriesBox = styled.button`
 const LogoName = styled.div`
   margin-left: 20px;
 
-  font-size: calc(10px + 2vmin);
+  font-size: 1.5rem;
   cursor: pointer;
-  @media screen and (max-width: 800px) {
-    font-size: 15px;
+  @media screen and (max-width: 1200px) {
+    font-size: 1.2rem;
   }
-  @media screen and (max-width: 480px) {
-    font-size: 15px;
+  @media screen and (max-width: 800px) {
+    font-size: 1rem;
   }
 `;
 const SearchBoxDiv = styled.div`
@@ -218,11 +233,15 @@ const SearchDiv = styled.div`
   padding: 16px 30px 12px 27px;
   font-size: 20px;
   color: #9e9e9e;
+  @media screen and (max-width: 800px) {
+    padding: 10px 10px 12px 10px;
+    font-size: 16px;
+  }
 `;
 
 const Searchinput = styled.input`
   background-color: transparent;
-  width: 400px;
+  width: 350px;
 
   color: white;
   border: none;
@@ -230,6 +249,16 @@ const Searchinput = styled.input`
   font-size: 15px;
   border-radius: 10px;
   opacity: 0.5;
+  @media screen and (max-width: 1200px) {
+    padding: 10px 10px;
+    width: 120%;
+    font-size: 16px;
+  }
+  @media screen and (max-width: 800px) {
+    padding: 10px 10px;
+    width: 100%;
+    font-size: 16px;
+  }
 `;
 const SearchButton = styled.button`
   background-color: transparent;
@@ -253,7 +282,7 @@ const MenuBoxDiv = styled.div`
   font-weight: bolder;
   cursor: pointer;
   @media screen and (max-width: 480px) {
-    font-size: 14px;
+    font-size: 18px;
   }
 `;
 const Mode = styled.div`
@@ -272,8 +301,12 @@ const MenuDiv = styled.div`
     color: rgb(255, 255, 255, 100);
     transform: scale(1.3);
   }
+  @media screen and (max-width: 800px) {
+    padding: 0px 20px;
+  }
   @media screen and (max-width: 480px) {
-    padding: 20px;
+    padding: 0px 5px;
+    font-size: 14px;
   }
 `;
 
