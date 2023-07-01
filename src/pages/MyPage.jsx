@@ -1,7 +1,47 @@
-import React from 'react';
+import React,  { useEffect, useState } from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import Sidebar from '../components/ProfileSideBar.jsx';
+import Sidebar from '../components/ProfileSideBar';
 import styled from 'styled-components';
+import axios from 'axios';
+
+function MyPage() {
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    // 사용자 정보를 가져오는 요청
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('http://localhost:3100/api/user-info');
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error('사용자 정보 요청 실패:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <React.Fragment>
+        <GlobalStyle />
+        <MyPageContainer>
+          <Sidebar />
+          <Heading>마이페이지</Heading>
+          <Description>환영합니다! 이곳에서 회원 정보를 확인하고 수정할 수 있습니다.</Description>
+          {userInfo && (
+            <div>
+              <p>이름: {userInfo.name}</p>
+              <p>이메일: {userInfo.email}</p>
+              {/* 추가적인 사용자 정보를 표시하는 로직 작성 */}
+            </div>
+          )}
+        </MyPageContainer>
+      </React.Fragment>
+    </ThemeProvider>
+  );
+}
+
 
 // 전역 스타일 정의
 const GlobalStyle = createGlobalStyle`
@@ -34,21 +74,7 @@ const Description = styled.p`
   font-size: 16px;
 `;
 
-function MyPage() {
-  return (
-    <ThemeProvider theme={theme}>
-      <React.Fragment>
-        <GlobalStyle />
-        <MyPageContainer>
-          <Sidebar />
-          <Heading>마이페이지</Heading>
-          <Description>환영합니다! 이곳에서 회원 정보를 확인하고 수정할 수 있습니다.</Description>
-          {/* 추가적인 마이페이지 내용을 원하는 대로 추가하세요 */}
-        </MyPageContainer>
-      </React.Fragment>
-    </ThemeProvider>
-  );
-}
+
 
 export default MyPage;
 

@@ -19,7 +19,7 @@ const EditProfile = () => {
       birthDay
     };
 
-    axios.post('/api/profile', profileData)
+    axios.post('http://localhost:3100/api/profile', profileData)
       .then(response => {
         console.log(response.data); // 수정이 성공했을 때의 응답 처리
       })

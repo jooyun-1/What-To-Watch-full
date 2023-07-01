@@ -10,7 +10,8 @@ import Categories from "./pages/Categories";
 import PasswordChangePage from "./pages/PasswordChangePage";
 import EditProfile from "./pages/EditProfile";
 import Withdrawal from "./pages/Withdrawal";
-
+import GenreSelection from "./pages/GenreSelection";
+import SignupForm from "./pages/SignupForm";
 
 export default function App() {
   return (
@@ -27,6 +28,9 @@ export default function App() {
           <Route path="/password-change" element={<PasswordChangePage />} />
           <Route path="/profileEdit" element={<EditProfile />} />
           <Route path="/membership-withdrawal" element={<Withdrawal />} />
+
+          <Route path="/genreSelection" element={<GenreSelection />} />{/*선호 장르랑 회원가입 추가*/}
+          <Route path="/SignupForm" element={<SignupForm />} />
 
         </Routes>
       </Router>

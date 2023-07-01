@@ -69,6 +69,8 @@
 // export default Sidebar;
 
 //백엔드랑 연결할때 사용해보기!!!
+//////////////////////////////////////////////////////////////////////////////////
+
 
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -121,7 +123,7 @@ const NavLinkItem = styled(NavLink)`
 `;
 
 export default Sidebar;
-
+//////////////////////////////////////////////////////////////////////////////
 // import React from 'react';
 // import { NavLink } from 'react-router-dom';
 // import styled from 'styled-components';

@@ -1,10 +1,12 @@
+/////////////////////////////////////////////////////////////////////////////////////
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Google from "../components/Google.jsx";
-import Facebook from "../components/Facebook.jsx";
+// import Google from "../components/Google.jsx";
+// import Facebook from "../components/Facebook.jsx";
 import axios from "axios";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,16 +33,15 @@ const Login = () => {
         password,
         withCredentials: true,
       });
-      console.log(sessionStorage);
-      if (response.data.success === true && sessionStorage.length === 0) {
+
+      if (!sessionStorage) {
         sessionStorage.setItem("loginId", email);
         sessionStorage.setItem("loginPassword", password);
-        sessionStorage.setItem("genres", response.data.user.genres);
-
         console.log("로그인 성공!");
         setIsLogin(true);
         // 로그인 성공 후 처리할 로직 작성
-        navigate("/"); // 내 정보 페이지로 이동
+
+        navigate("/"); // 메인 페이지로 이동
       } else {
         setErrorMessage(response.data.message);
         alert("로그인 실패");
@@ -49,9 +50,10 @@ const Login = () => {
       console.error("로그인 요청 실패:", error);
     }
   };
-    if (isLogin) {
-      return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 사라지게 함
-    }
+
+        if (isLogin) {
+          return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 없앰
+        }
 
 
   return (
@@ -72,7 +74,12 @@ const Login = () => {
           onChange={handlePasswordChange}
           required
         />
-
+        {/* <>
+          <Google />
+        </>
+        <>
+          <Facebook />
+        </> 구글연동은 안하기로해서 주석처리*/}
         {/* <input
           type="checkbox"
           name="saveEmail"
@@ -88,12 +95,6 @@ const Login = () => {
         </LoginButton>
         {errorMessage && <LoginErrorMessage>{errorMessage}</LoginErrorMessage>}
       </LoginForm>
-      <>
-        <Google />
-      </>
-      <>
-        <Facebook />
-      </>
     </LoginContainer>
   );
 };
@@ -154,6 +155,166 @@ const LoginErrorMessage = styled.p`
 `;
 
 export default Login;
+
+
+// import React, { useState } from "react";
+// import styled from "styled-components";
+// import { useHistory } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+// import Google from "../components/Google.jsx";
+// import Facebook from "../components/Facebook.jsx";
+// import axios from "axios";
+
+// const Login = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [errorMessage, setErrorMessage] = useState("");
+//   const [isLogin, setIsLogin] = useState(false);
+//   const navigate = useNavigate();
+//   // const history = useHistory();
+//   let sessionStorage = window.sessionStorage;
+//   const handleUsernameChange = (event) => {
+//     setEmail(event.target.value);
+//   };
+
+//   const handlePasswordChange = (event) => {
+//     setPassword(event.target.value);
+//   };
+
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+
+//     try {
+//       const response = await axios.post("http://localhost:3100/users/login", {
+//         email,
+//         password,
+//         withCredentials: true,
+//       });
+//       console.log(sessionStorage);
+//       if (response.data.success === true && sessionStorage.length === 0) {
+//         sessionStorage.setItem("loginId", email);
+//         sessionStorage.setItem("loginPassword", password);
+//         sessionStorage.setItem("genres", response.data.user.genres);
+
+//         console.log("로그인 성공!");
+//         setIsLogin(true);
+//         // 로그인 성공 후 처리할 로직 작성
+//         navigate("/"); // 메인 페이지로 이동
+//       } else {
+//         setErrorMessage(response.data.message);
+//         alert("로그인 실패");
+//       }
+//     } catch (error) {
+//       console.error("로그인 요청 실패:", error);
+//     }
+//   };
+//     if (isLogin) {
+//       return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 사라지게 함
+//     }
+
+
+//   return (
+//     <LoginContainer>
+//       <LoginForm onSubmit={handleSubmit}>
+//         <LoginTitle>Login</LoginTitle>
+//         <LoginInput
+//           type="text"
+//           placeholder="Email ID"
+//           value={email}
+//           onChange={handleUsernameChange}
+//           required
+//         />
+//         <LoginInput
+//           type="password"
+//           placeholder="Password"
+//           value={password}
+//           onChange={handlePasswordChange}
+//           required
+//         />
+
+//         {/* <input
+//           type="checkbox"
+//           name="saveEmail"
+//           id="saveEmail"
+//           checked={username}
+//           // onChange={handleSaveIDFlag}
+//         />
+//         <label>
+//           <span>아이디 저장</span>
+//         </label> */}
+//         <LoginButton type="submit" onSubmit={handleSubmit}>
+//           Login
+//         </LoginButton>
+//         {errorMessage && <LoginErrorMessage>{errorMessage}</LoginErrorMessage>}
+//       </LoginForm>
+//       <>
+//         <Google />
+//       </>
+//       <>
+//         <Facebook />
+//       </>
+//     </LoginContainer>
+//   );
+// };
+
+// const LoginContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: #000;
+//   height: 100vh;
+// `;
+
+// const LoginForm = styled.form`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: #5a5858;
+//   padding: 30px;
+//   border-radius: 5px;
+//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+// `;
+
+// const LoginInput = styled.input`
+//   width: 100%;
+//   padding: 10px;
+//   margin-bottom: 10px;
+//   border: 1px solid #ccc;
+//   border-radius: 3px;
+//   font-size: 16px;
+//   &:focus {
+//     outline: none;
+//     border-color: #007bff;
+//   }
+// `;
+
+// const LoginButton = styled.button`
+//   padding: 10px 20px;
+//   border: none;
+//   border-radius: 3px;
+//   background-color: #2e2e2e;
+//   color: #fff;
+//   font-size: 16px;
+//   cursor: pointer;
+// `;
+
+// const LoginTitle = styled.h1`
+//   margin-bottom: 30px;
+//   font-size: 24px;
+//   font-weight: bold;
+// `;
+
+// const LoginErrorMessage = styled.p`
+//   margin-top: 10px;
+//   color: #dc3545;
+//   font-size: 14px;
+// `;
+
+// export default Login;
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 // import React from 'react';
 // import styled from 'styled-components';
