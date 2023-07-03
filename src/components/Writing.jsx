@@ -22,29 +22,35 @@ const Writing = ({ isWriteOpen, setIsWriteOpen }) => {
   console.log("날짜", submitDate);
 
   //submit 할떄 post로 서버에 등록 post는 비동기적으로 처리할 필요 없음
-  const submitReview = () => {
+  const submitReview = async () => {
+    console.log(writeContent, "aa");
     const APIURL = "http://localhost:3100";
     // const params = {
     //   title: viewContent.title,
     //   post: viewContent.content,
     //   // date: submitDate.date,
     // };
-    axios.post(`${APIURL}/board/posts`, {
-        headers: {
-          "Content-Type": `application/json`
-        },
-        title: viewContent.title,
-        post: viewContent.content,
-      
-      }) 
-      .catch(function(error) {
+    const title = writeContent.title;
+    const content = writeContent.content;
+
+    //   email,
+    //   password,
+    //   withCredentials: true,
+    // });
+    await axios
+      .post(`${APIURL}/board/posts`, {
+        // title,
+        // content,
+        title: title,
+        post: content,
+      })
+      .catch(function (error) {
         console.log("실패");
         console.log(error);
       });
-      // .then(() => {
-      //   alert("등록 완료");
-      // });
-     
+    // .then(() => {
+    //   alert("등록 완료");
+    // });
   };
 
   const handleCancel = (e) => {
@@ -88,7 +94,7 @@ const Writing = ({ isWriteOpen, setIsWriteOpen }) => {
               console.log("ㅇ", { event, editor, data });
               setWriteContent({
                 ...writeContent,
-                content: data,
+                content: data.replace(/(<([^>]+)>)/gi, ""),
               });
             }}
             onBlur={(event, editor) => {
@@ -110,7 +116,7 @@ const Writing = ({ isWriteOpen, setIsWriteOpen }) => {
           <SubmitBtn
             //제출할때 유효성 검사 1)제목이 없으면 alert 2)내용이 없으면 alert 3)나머지는 날짜 및 데이터
             //변화하고 submitReview로 서버에 데이터 post로 전송 그리고 창 닫아주기
-            type ="submit"
+            type="submit"
             onClick={() => {
               if (writeContent.title === "") {
                 alert("제목을 입력해주시기 바랍니다.");

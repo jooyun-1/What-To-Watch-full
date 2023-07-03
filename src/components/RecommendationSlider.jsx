@@ -70,7 +70,7 @@ export default function RecommendationSlider() {
   };
 
   const getTVList = async () => {
-    const genres = sessionStorage.getItem("genres");
+    const genres = sessionStorage.getItem("tvgenres");
     const params = { genres: genres };
     console.log(params);
     const response = await axios.get(

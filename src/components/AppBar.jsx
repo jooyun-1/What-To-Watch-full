@@ -5,6 +5,7 @@ import { BsPerson, BsSearch, BsMoon } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
 import SideBar from "./SideBar";
 import axios from "axios";
+
 const MoveToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }; // 상단으로 이동 (beahvior : auto, smooth)
@@ -33,6 +34,7 @@ export default function AppBar() {
     console.log(response.data);
     // if (response.data.success === true && sessionStorage.length > 0) {
     window.sessionStorage.clear();
+    window.location.replace("/");
     // }
   };
 
@@ -54,13 +56,15 @@ export default function AppBar() {
         <AppBarTop>
           {" "}
           <Login>
-            <button value="로그아웃" onClick={() => logout()}>
-              로그아웃
-            </button>{" "}
+            {window.sessionStorage.length === 0 ? null : (
+              <LogoutButton value="로그아웃" onClick={() => logout()}>
+                Logout
+              </LogoutButton>
+            )}
           </Login>
-          <SelfInfo>
+          {/* <SelfInfo>
             <BsPerson />
-          </SelfInfo>
+          </SelfInfo> */}
         </AppBarTop>
         <AppBarBottom>
           <LogoBox>
@@ -359,4 +363,14 @@ const Overlay = styled.div`
   left: 0;
   background-color: rgb(0 0 0 / 30%);
   z-index: 20;
+`;
+
+const LogoutButton = styled.button`
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #2e2e2e;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
 `;

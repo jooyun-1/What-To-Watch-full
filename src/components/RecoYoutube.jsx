@@ -66,7 +66,7 @@ export default function RecoYoutube() {
   const [videoList, setVideoList] = useState([]);
 
   const getVideoList = async () => {
-    const genres = sessionStorage.getItem("genres");
+    const genres = sessionStorage.getItem("videogenres");
     const params = { genres: genres };
     console.log(params);
     const response = await axios.get("http://localhost:3100/recommend-videos", {
