@@ -1,35 +1,38 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
-
-import { RiLockPasswordLine } from 'react-icons/ri';
-import { AiOutlineUser } from 'react-icons/ai';
-import { HiOutlineMail } from 'react-icons/hi';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { AiOutlineUser } from "react-icons/ai";
+import { HiOutlineMail } from "react-icons/hi";
 
 const SignupForm = () => {
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [birth, setBirth] = useState('');
-  const [gender, setGender] = useState('');
-  const [genre, setGenre] = useState('');
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [step, setStep] = useState(1);
-  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState([]);
+  const [selectedTVGenre, setSelectedTVGenre] = useState([]);
+  const [selectedVideoGenre, setSelectedVideoGenre] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [tvGenres, setTVGenres] = useState([]);
+  const [videoGenres, setVideoGenres] = useState([]);
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await axios.get('http://localhost:3100/api/genres'); // 장르 데이터를 가져오는 엔드포인트
-        setGenres(response.data);
+        const response = await axios.get("http://localhost:3100/genres"); // 장르 데이터를 가져오는 엔드포인트
+        const response2 = await axios.get("http://localhost:3100/tvgenres");
+        const response3 = await axios.get("http://localhost:3100/video-genres");
+        setGenres(response.data.genresList);
+        setTVGenres(response2.data.genresList);
+        setVideoGenres(response3.data.videoGenreList);
       } catch (error) {
-        console.error('장르 데이터 요청 실패:', error);
+        console.error("장르 데이터 요청 실패:", error);
       }
     };
 
@@ -37,8 +40,8 @@ const SignupForm = () => {
   }, []);
 
   const handleNextStep = () => {
-    if (!id || !password || !email || !name) {
-      alert('모든 필드를 입력해주세요.');
+    if (!id || !password || !name) {
+      alert("모든 필드를 입력해주세요.");
       return;
     }
     setStep(step + 1);
@@ -48,56 +51,85 @@ const SignupForm = () => {
     setStep(step - 1);
   };
 
+  const goToMain = () => {
+    alert("회원가입 성공");
+    navigate("/");
+  };
   const handleSubmit = async () => {
-    if (!id || !password || !email || !name) {
-      alert('모든 필드를 입력해주세요.');
+    if (!password || !id || !name) {
+      alert("모든 필드를 입력해주세요.");
       return;
     }
 
     try {
       setLoading(true); // 로딩 상태 활성화
+      const checkedGenres = document.getElementsByName("checkedGenre");
+      const checkedTVGenres = document.getElementsByName("checkedTVGenre");
+      const checkedVideoGenres =
+        document.getElementsByName("checkedVideoGenre");
 
-      const response = await axios.post('http://localhost:3100/api/users/signup', { // 회원가입 요청을 보내는 엔드포인트
-        username: id,
+      for (let i = 0; i < checkedGenres.length; i++) {
+        if (checkedGenres[i].checked === true) {
+          selectedGenre.push(checkedGenres[i].value);
+        }
+      }
+
+      for (let i = 0; i < checkedTVGenres.length; i++) {
+        if (checkedTVGenres[i].checked === true) {
+          selectedTVGenre.push(checkedTVGenres[i].value);
+        }
+      }
+
+      for (let i = 0; i < checkedVideoGenres.length; i++) {
+        if (checkedVideoGenres[i].checked === true) {
+          selectedVideoGenre.push(checkedVideoGenres[i].value);
+        }
+      }
+
+      const response = await axios.post("http://localhost:3100/users/join", {
+        // 회원가입 요청을 보내는 엔드포인트
+        username: name,
         password: password,
-        email: email,
-        name: name,
-        genre: selectedGenre,
+        email: id,
+        genres: selectedGenre,
+        tvgenres: selectedTVGenre,
+        videogenres: selectedVideoGenre,
       });
 
       setLoading(false); // 로딩 상태 비활성화
 
       if (response.status === 200) {
-        alert('회원가입 성공!');
+        alert("회원가입 성공!");
         handleNextStep();
+        navigate("/");
       } else {
-        alert('회원가입 실패!');
+        alert("회원가입 실패!");
       }
     } catch (error) {
-      setLoading(false); 
+      setLoading(false);
 
-      console.error('회원가입 실패:', error);
+      console.error("회원가입 실패:", error);
       if (error.response) {
         setErrorMessage(error.response.data.message); // 서버로부터 받은 오류 메시지 설정
       } else {
-        setErrorMessage('회원가입 중 오류가 발생했습니다.'); 
+        setErrorMessage("회원가입 중 오류가 발생했습니다.");
       }
     }
   };
 
   return (
-    <WrapBox>
+    <>
       {step === 1 && (
-        <>
+        <WrapBox>
           <Title>TODAY</Title>
           <InputContainer>
             <Inputdiv>아이디</Inputdiv>
             <IconWrapper>
-              <AiOutlineUser style={{ color: 'gray' }} />
+              <AiOutlineUser style={{ color: "gray" }} />
             </IconWrapper>
             <Input
               type="text"
-              placeholder="아이디"
+              placeholder="이메일"
               value={id}
               onChange={(e) => setId(e.target.value)}
               required
@@ -107,7 +139,7 @@ const SignupForm = () => {
           <InputContainer>
             <Inputdiv>비밀번호</Inputdiv>
             <IconWrapper>
-              <RiLockPasswordLine style={{ color: 'gray' }} />
+              <RiLockPasswordLine style={{ color: "gray" }} />
             </IconWrapper>
             <Input
               type="password"
@@ -115,13 +147,13 @@ const SignupForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={8} 
+              minLength={8}
             />
           </InputContainer>
-          <InputContainer>
+          {/* <InputContainer>
             <Inputdiv>이메일</Inputdiv>
             <IconWrapper>
-              <HiOutlineMail style={{ color: 'gray' }} />
+              <HiOutlineMail style={{ color: "gray" }} />
             </IconWrapper>
             <Input
               type="email"
@@ -130,11 +162,11 @@ const SignupForm = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-          </InputContainer>
+          </InputContainer> */}
           <InputContainer>
             <Inputdiv>이름</Inputdiv>
             <IconWrapper>
-              <AiOutlineUser style={{ color: 'gray' }} />
+              <AiOutlineUser style={{ color: "gray" }} />
             </IconWrapper>
             <Input
               type="text"
@@ -145,49 +177,74 @@ const SignupForm = () => {
             />
           </InputContainer>
           <Button onClick={handleNextStep}>다음</Button>
-        </>
+        </WrapBox>
       )}
-
       {step === 2 && (
-        <>
-          <Title>선호 장르 선택</Title>
+        <WrapBox2>
+          <TitleBox>
+            <Title>선호 장르 선택</Title>
+          </TitleBox>
           <GenreContainer>
-            {genres.map((genre) => (
-              <GenreOption key={genre}>
+            <GenreTitle>영화 장르</GenreTitle>
+            {genres.map((props) => (
+              <GenreOption key={props.id}>
                 <GenreCheckbox
-                  type="radio"
-                  id={genre}
-                  value={genre}
-                  checked={selectedGenre === genre}
-                  onChange={() => setSelectedGenre(genre)}
+                  type="checkbox"
+                  id={props.id}
+                  name="checkedGenre"
+                  value={props.genre_name}
+                  // checked={selectedGenre === props.id}
                 />
-                <GenreLabel htmlFor={genre}>{genre}</GenreLabel>
+                {props.genre_name}
+                {/* <GenreLabel htmlFor={genre}>{genre}</GenreLabel> */}
+              </GenreOption>
+            ))}
+          </GenreContainer>
+          <GenreContainer>
+            <GenreTitle>TvShow 장르</GenreTitle>
+            {tvGenres.map((props) => (
+              <GenreOption key={props.id}>
+                <GenreCheckbox
+                  type="checkbox"
+                  id={props.id}
+                  name="checkedTVGenre"
+                  value={props.genre_name}
+                  // checked={selectedGenre === props.id}
+                />
+                {props.genre_name}
+                {/* <GenreLabel htmlFor={genre}>{genre}</GenreLabel> */}
+              </GenreOption>
+            ))}
+          </GenreContainer>
+          <GenreContainer>
+            <GenreTitle>Youtube 장르</GenreTitle>
+            {videoGenres.map((props) => (
+              <GenreOption key={props.id}>
+                <GenreCheckbox
+                  type="checkbox"
+                  id={props.id}
+                  name="checkedVideoGenre"
+                  value={props.genre_name}
+                  // checked={selectedGenre === props.id}
+                />
+                {props.genre_name}
+                {/* <GenreLabel htmlFor={genre}>{genre}</GenreLabel> */}
               </GenreOption>
             ))}
           </GenreContainer>
           <ButtonContainer>
             <Button onClick={handlePrevStep}>이전</Button>
             {/* 로딩 상태에 따라 버튼 비활성화 */}
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              {loading ? '가입 중...' : '가입하기'}
+            <Button type="submit" onClick={handleSubmit} disabled={loading}>
+              {loading ? "가입 중..." : "가입하기"}
             </Button>
           </ButtonContainer>
-        </>
+        </WrapBox2>
       )}
-
-      {step === 3 && (
-        <>
-          <Title>회원가입 완료</Title>
-          <p>회원가입이 완료되었습니다.</p>
-        </>
-      )}
-
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} {/* 오류 메시지 표시 */}
-    </WrapBox>
+      {/* {step === 3 && <>{goToMain()}</>} */}
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}{" "}
+      {/* 오류 메시지 표시 */}
+    </>
   );
 };
 
@@ -205,12 +262,18 @@ const WrapBox = styled.div`
   background-color: #232323;
 `;
 
+const TitleBox = styled.div`
+  top: 0px;
+  width: 100%;
+  height: 10%;
+  justify-content: center;
+`;
 const Title = styled.h1`
-  display: flex;
+  // display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  margin-left: 10px;
+  // margin-left: 10px;
   color: #ffffff;
 `;
 
@@ -270,10 +333,20 @@ const Button = styled.button`
   }
 `;
 
+const WrapBox2 = styled.div`
+  background-color: #232323;
+`;
 const GenreContainer = styled.div`
   margin-top: 20px;
+  margin-left: 20px;
+  float: left;
+  width: 33%;
 `;
 
+const GenreTitle = styled.h1`
+  color: white;
+  text-align: center;
+`;
 const GenreOption = styled.div`
   margin-bottom: 10px;
 `;
@@ -294,18 +367,12 @@ const ButtonContainer = styled.div`
 
 export default SignupForm;
 
-
-
-
-
-
 // import React, { useState } from 'react';
 // import styled from 'styled-components';
 // import axios from 'axios';
 
 // import {RiLockPasswordLine} from 'react-icons/ri';
 // import {BsPencil} from 'react-icons/bs';
-
 
 // const SignupForm = () => {
 //   const [id, setId] = useState('');
@@ -318,8 +385,7 @@ export default SignupForm;
 // //   const [birthYear, setBirthYear] = useState('1990');
 // //   const [birthMonth, setBirthMonth] = useState('01');
 // //   const [birthDay, setBirthDay] = useState('01');
-//   const [gender, setGender] = useState(''); 
-
+//   const [gender, setGender] = useState('');
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
@@ -346,13 +412,9 @@ export default SignupForm;
 //       setErrorMessage('회원가입에 실패했습니다. 다시 시도해주세요.');
 //     }
 //   };
-  
 
 // //   const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
 // //   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-
-
-
 
 //   return (
 //     <WrapBox>
@@ -423,7 +485,7 @@ export default SignupForm;
 //         onChange={(e) => setBirth(e.target.value)}
 //         required
 //       />
-      
+
 //       <Inputdiv>
 //         성별
 //       </Inputdiv>
@@ -459,9 +521,6 @@ export default SignupForm;
 //       </GenderRadioGroup>
 //       {/* </FormGroup> */}
 
-
-
-
 //       {/* <Label>생년월일</Label>
 //       <FormGroup>
 //           <BirthInputGroup>
@@ -494,7 +553,7 @@ export default SignupForm;
 //             <Separator>일</Separator>
 //           </BirthInputGroup>
 //         </FormGroup> */}
-      
+
 //       <Button type="submit">가입하기</Button>
 //       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 //     </Form>
@@ -533,24 +592,16 @@ export default SignupForm;
 //     const GenderLabel = styled.label`
 //     margin-right: 35px;
 //   `;
-  
+
 //   const GenderRadioGroup = styled.div`
 //     display: flex;
 //     align-items: center;
 //     margin-bottom: 20px;
 //   `;
-  
+
 //   const GenderRadio = styled.input`
 //     margin-right: 5px;
 //   `;
- 
-
-
-
-
-
-
-
 
 // const WrapBox = styled.div`
 //   display: flex;
@@ -563,7 +614,7 @@ export default SignupForm;
 // const Title = styled.h1`
 //   display: flex;
 //   justify-content: center;
-//   align-items: center;  
+//   align-items: center;
 //   font-weight: bold;
 //   margin-left: 10px;
 //   color: #ffffff; /* 다크 모드 글자 색상 */
@@ -601,8 +652,6 @@ export default SignupForm;
 //   margin-right: 5px;
 // `;
 // //////////////////////////////////////////////////////////////////
-
-
 
 // const Form = styled.form`
 //   display: flex;
@@ -650,11 +699,7 @@ export default SignupForm;
 //   font-size: 14px;
 // `;
 
-
-
-
 // export default SignupForm;
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -717,8 +762,6 @@ export default SignupForm;
 //   color: #ffffff; /* 다크 모드 글자 색상 */
 // `;
 
-
-
 // const WrapBox = styled.div`
 //   display: flex;
 //   justify-content: center;
@@ -726,7 +769,6 @@ export default SignupForm;
 //   height: 100vh;
 //   background-color: #232323;
 // `;
-
 
 // const Form = styled.form`
 //   display: flex;
@@ -743,8 +785,5 @@ export default SignupForm;
 // const Button = styled.button`
 //   /* 버튼 스타일링 */
 // `;
-
-
-
 
 // export default SignupForm;

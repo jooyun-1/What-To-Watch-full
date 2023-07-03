@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 // import Facebook from "../components/Facebook.jsx";
 import axios from "axios";
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,9 +33,18 @@ const Login = () => {
         withCredentials: true,
       });
 
-      if (!sessionStorage) {
+      if (sessionStorage.length === 0) {
+        const params = { email: email };
+        const res = await axios.get("http://localhost:3100/users/login", {
+          params,
+        });
+        const user = res.data.result;
+        console.log(user);
         sessionStorage.setItem("loginId", email);
         sessionStorage.setItem("loginPassword", password);
+        sessionStorage.setItem("genres", user.genres);
+        sessionStorage.setItem("tvgenres", user.tvgenres);
+        sessionStorage.setItem("videogenres", user.videogenres);
         console.log("로그인 성공!");
         setIsLogin(true);
         // 로그인 성공 후 처리할 로직 작성
@@ -51,13 +59,12 @@ const Login = () => {
     }
   };
 
-        if (isLogin) {
-          return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 없앰
-        }
-
+  if (isLogin) {
+    return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 없앰
+  }
 
   return (
-    <LoginContainer>
+    <>
       <LoginForm onSubmit={handleSubmit}>
         <LoginTitle>Login</LoginTitle>
         <LoginInput
@@ -74,28 +81,13 @@ const Login = () => {
           onChange={handlePasswordChange}
           required
         />
-        {/* <>
-          <Google />
-        </>
-        <>
-          <Facebook />
-        </> 구글연동은 안하기로해서 주석처리*/}
-        {/* <input
-          type="checkbox"
-          name="saveEmail"
-          id="saveEmail"
-          checked={username}
-          // onChange={handleSaveIDFlag}
-        />
-        <label>
-          <span>아이디 저장</span>
-        </label> */}
         <LoginButton type="submit" onSubmit={handleSubmit}>
           Login
         </LoginButton>
+        <JoinButton onClick={() => navigate("/SignupForm")}>Join</JoinButton>
         {errorMessage && <LoginErrorMessage>{errorMessage}</LoginErrorMessage>}
       </LoginForm>
-    </LoginContainer>
+    </>
   );
 };
 
@@ -142,6 +134,16 @@ const LoginButton = styled.button`
   cursor: pointer;
 `;
 
+const JoinButton = styled.button`
+  padding: 10px 24px;
+  border: none;
+  border-radius: 3px;
+  background-color: orange;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 5px;
+`;
 const LoginTitle = styled.h1`
   margin-bottom: 30px;
   font-size: 24px;
@@ -155,7 +157,6 @@ const LoginErrorMessage = styled.p`
 `;
 
 export default Login;
-
 
 // import React, { useState } from "react";
 // import styled from "styled-components";
@@ -211,7 +212,6 @@ export default Login;
 //     if (isLogin) {
 //       return null; // 로그인 성공 시 컴포넌트를 null로 렌더링하여 사라지게 함
 //     }
-
 
 //   return (
 //     <LoginContainer>

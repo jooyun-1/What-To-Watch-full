@@ -9,6 +9,8 @@ import TotalWrap from "../styled-components/TotalWrap";
 import LoginTab from "../components/Login";
 
 export default function Home() {
+  let sessionStorage = window.sessionStorage;
+
   return (
     <div>
       <AppBar />
@@ -20,7 +22,7 @@ export default function Home() {
             <BannerSlider />
             <LoginSevice>
               {/* <LoginImg src={Login} alt="Login" /> */}
-              <LoginTab />
+              {sessionStorage.length > 0 ? null : <LoginTab />}
             </LoginSevice>
           </BannerBox>
         </WrapBox>
